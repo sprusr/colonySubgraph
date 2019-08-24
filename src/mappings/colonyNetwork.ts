@@ -1,3 +1,5 @@
+import { BigInt } from '@graphprotocol/graph-ts'
+
 import {
   ColonyNetworkInitialised,
   TokenLockingAddressSet,
@@ -16,6 +18,7 @@ import {
 } from '../../generated/ColonyNetwork/IColonyNetwork'
 
 import { Colony, Domain, ColonyRoles, User } from '../../generated/schema'
+import { Colony as ColonyTemplate } from '../../generated/ColonyNetwork/templates'
 
 export function handleColonyNetworkInitialised(
   event: ColonyNetworkInitialised
@@ -36,25 +39,22 @@ export function handleColonyVersionAdded(event: ColonyVersionAdded): void {}
 export function handleMetaColonyCreated(event: MetaColonyCreated): void {}
 
 export function handleColonyAdded(event: ColonyAdded): void {
-  const {
-    params: { colonyId, colonyAddress, token },
-    transaction: { from },
-  } = event
-  
-  const creatorRoles = new ColonyRoles(`${colonyAddress.toHex()}_1_${from.toHex()}`)
-  creatorRoles.user = from.toHex()
-  creatorRoles.domain = `${colonyAddress.toHex()}_1`
+  ColonyTemplate.create(event.params.colonyAddress)
+
+  let creatorRoles = new ColonyRoles(`${event.params.colonyAddress.toHex()}_1_${event.transaction.from.toHex()}`)
+  creatorRoles.user = event.transaction.from.toHex()
+  creatorRoles.domain = `${event.params.colonyAddress.toHex()}_1`
   creatorRoles.administration = true
   creatorRoles.save()
 
-  const rootDomain = new Domain(`${colonyAddress.toHex()}_1`)
-  rootDomain.index = 1
+  let rootDomain = new Domain(`${event.params.colonyAddress.toHex()}_1`)
+  rootDomain.index = new BigInt(1)
   rootDomain.roles = [creatorRoles.id]
   rootDomain.save()
 
-  const colony = new Colony(colonyAddress.toHex())
-  colony.index = colonyId
-  colony.token = token.toHex()
+  let colony = Colony.load(event.params.colonyAddress.toHex())
+  colony.index = event.params.colonyId
+  colony.token = event.params.token.toHex()
   colony.domains = [rootDomain.id]
   colony.save()
 }
@@ -76,9 +76,8 @@ export function handleReputationRootHashSet(
 ): void {}
 
 export function handleUserLabelRegistered(event: UserLabelRegistered): void {
-  const { user: userAddress, label } = event.params
-  const user = User.load(userAddress.toHex()) || new User(userAddress.toHex())
-  user.ensName = label.toString() // TODO: this is hash currently
+  let user = User.load(event.params.user.toHex()) || new User(event.params.user.toHex())
+  user.ensName = event.params.label.toString() // TODO: this is hash currently
   user.save()
 }
 

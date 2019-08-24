@@ -7,7 +7,7 @@ type Colony @entity {
   id: ID! # Address
   ensName: String
   orbitAddress: String
-  index: Int
+  index: BigInt!
   token: String # Address
   domains: [Domain!]!
 }
@@ -15,7 +15,7 @@ type Colony @entity {
 # Should not be in root query
 type Domain @entity {
   id: ID! # colonyAddress_domainId
-  index: Int!
+  index: BigInt!
   parent: Domain
   roles: [ColonyRoles!]!
 }
@@ -31,5 +31,6 @@ type ColonyRoles @entity {
 
 type Skill @entity {
   id: ID!
+  index: BigInt!
   parent: Skill
 }

@@ -4,10 +4,10 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ JoinColony/colonyNetwork",
-    "create-local": "graph create --node http://localhost:8020/ JoinColony/colonyNetwork",
-    "remove-local": "graph remove --node http://localhost:8020/ JoinColony/colonyNetwork",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 JoinColony/colonyNetwork",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ sprusr/colony",
+    "create-local": "graph create --node http://localhost:8020/ sprusr/colony",
+    "remove-local": "graph remove --node http://localhost:8020/ sprusr/colony",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sprusr/colony",
     "test": "graph codegen && graph build"
   },
   "dependencies": {

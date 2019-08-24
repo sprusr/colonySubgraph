@@ -1,4 +1,7 @@
+import { BigInt } from '@graphprotocol/graph-ts'
+
 import {
+  IColony,
   ColonyInitialised,
   ColonyBootstrapped,
   ColonyUpgraded,
@@ -27,8 +30,9 @@ import {
   FundingPotAdded,
   RegisterColonyLabelCall,
 } from '../../generated/ColonyNetwork/templates/Colony/IColony'
+import { IColonyNetwork } from '../../generated/ColonyNetwork/IColonyNetwork'
 
-import { Colony, ColonyRoles } from '../../generated/schema'
+import { Colony, ColonyRoles, Domain } from '../../generated/schema'
 
 export function handleColonyInitialised(event: ColonyInitialised): void {}
 
@@ -37,23 +41,18 @@ export function handleColonyBootstrapped(event: ColonyBootstrapped): void {}
 export function handleColonyUpgraded(event: ColonyUpgraded): void {}
 
 export function handleColonyRoleSet(event: ColonyRoleSet): void {
-  const {
-    params: { user, domainId, role, setTo },
-    address: colonyAddress,
-  } = event
-
-  let roles = ColonyRoles.load(`${colonyAddress.toHex()}_${domainId.toString()}_${user.toHex()}`)
+  let roles = ColonyRoles.load(`${event.address.toHex()}_${event.params.domainId.toString()}_${event.params.user.toHex()}`)
   if (!roles) {
-    roles = new ColonyRoles(`${colonyAddress.toHex()}_${domainId.toString()}_${user.toHex()}`)
-    roles.user = user.toHex()
-    roles.domain = `${colonyAddress.toHex()}_${domainId.toString()}`
+    roles = new ColonyRoles(`${event.address.toHex()}_${event.params.domainId.toString()}_${event.params.user.toHex()}`)
+    roles.user = event.params.user.toHex()
+    roles.domain = `${event.address.toHex()}_${event.params.domainId.toString()}`
   }
 
-  switch (role) {
+  switch (event.params.role) {
     // TODO: support the other roles
 
     case 6:
-      roles.administration = setTo
+      roles.administration = event.params.setTo
       break;
 
     default:
@@ -115,18 +114,21 @@ export function handlePayoutClaimed(event: PayoutClaimed): void {}
 
 export function handleTaskCanceled(event: TaskCanceled): void {}
 
-export function handleDomainAdded(event: DomainAdded): void {}
+export function handleDomainAdded(event: DomainAdded): void {
+  let domain = new Domain(`${event.address.toHex()}_${event.params.domainId.toString()}`)
+  domain.index = event.params.domainId
+  domain.parent = `${event.address.toHex()}_1`
+  domain.save()
+}
 
 export function handleFundingPotAdded(event: FundingPotAdded): void {}
 
 export function handleRegisterColonyLabel(call: RegisterColonyLabelCall): void {
-  const {inputs: { orbitdb, colonyName }, to: colonyAddress} = call
-
-  const colony = Colony.load(colonyAddress.toHex())
+  let colony = Colony.load(call.to.toHex())
   if (!colony) return
 
-  colony.ensName = colonyName
-  colony.orbitAddress = orbitdb
+  colony.ensName = call.inputs.colonyName
+  colony.orbitAddress = call.inputs.orbitdb
   
   colony.save()
 }
