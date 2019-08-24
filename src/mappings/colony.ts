@@ -125,10 +125,10 @@ export function handleFundingPotAdded(event: FundingPotAdded): void {}
 
 export function handleRegisterColonyLabel(call: RegisterColonyLabelCall): void {
   let colony = Colony.load(call.to.toHex())
-  if (!colony) return
-
-  colony.ensName = call.inputs.colonyName
-  colony.orbitAddress = call.inputs.orbitdb
   
-  colony.save()
+  if (colony) {
+    colony.ensName = call.inputs.colonyName
+    colony.orbitAddress = call.inputs.orbitdb
+    colony.save()
+  }
 }
