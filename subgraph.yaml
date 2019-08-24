@@ -50,9 +50,6 @@ dataSources:
           handler: handleUserLabelRegistered
         - event: ColonyLabelRegistered(indexed address,bytes32)
           handler: handleColonyLabelRegistered
-      callHandlers:
-        - function: registerColonyLabel(string,string)
-          handler: handleRegisterColonyLabel
       file: ./src/mappings/colonyNetwork.ts
     templates:
       - name: Colony
@@ -124,3 +121,6 @@ dataSources:
               handler: handleDomainAdded
             - event: FundingPotAdded(uint256)
               handler: handleFundingPotAdded
+          callHandlers:
+            - function: registerColonyLabel(string,string)
+              handler: handleRegisterColonyLabel
