@@ -15,4 +15,5 @@ jobs:
       script: yarn test
     - stage: deploy
       script:
+        - yarn test
         - yarn deploy --access-token=$THEGRAPH_TOKEN
