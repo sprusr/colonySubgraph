@@ -14,4 +14,7 @@ jobs:
     - stage: test
       script: yarn test
     - stage: deploy
-      script: graph auth https://api.thegraph.com/deploy/ $THEGRAPH_TOKEN && yarn deploy
+      before_install:
+        - sudo apt-get install -y libsecret-1-dev
+      script:
+        - graph auth https://api.thegraph.com/deploy/ $THEGRAPH_TOKEN && yarn deploy
