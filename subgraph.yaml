@@ -17,21 +17,6 @@ dataSources:
       entities:
         - Colony
         - Skill
-        - User
-        # - ColonyNetworkInitialised
-        # - TokenLockingAddressSet
-        # - MiningCycleResolverSet
-        # - NetworkFeeInverseSet
-        # - ColonyVersionAdded
-        # - MetaColonyCreated
-        # - ColonyAdded
-        # - SkillAdded
-        # - AuctionCreated
-        # - ReputationMiningInitialised
-        # - ReputationMiningCycleComplete
-        # - ReputationRootHashSet
-        # - UserLabelRegistered
-        # - ColonyLabelRegistered
       abis:
         - name: IColonyNetwork
           file: ./abis/IColonyNetwork.json
@@ -78,7 +63,7 @@ dataSources:
           file: ./src/mappings/colony.ts
           entities:
             - Domain
-            - UserColonyRoles
+            - ColonyRoles
           abis:
             - name: IColony
               file: ./abis/IColony.json

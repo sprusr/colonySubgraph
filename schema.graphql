@@ -1,26 +1,26 @@
-type User @entity {
-  id: ID!
-  ensName: String
-}
-
 type Colony @entity {
-  id: ID!
+  id: ID! # Address
+  ensName: String
+  index: Int
+  token: String # Address
   domains: [Domain!]!
 }
 
 # Should not be in root query
-type UserColonyRoles @entity {
-  id: ID! # Don't want this
-  user: User!
-  administration: Boolean!
-  # TODO: other roles
+type Domain @entity {
+  id: ID! # colonyAddress_domainId
+  index: Int!
+  parent: Domain
+  roles: [ColonyRoles!]!
 }
 
 # Should not be in root query
-type Domain @entity {
-  id: ID!
-  parent: Domain
-  roles: [UserColonyRoles!]!
+type ColonyRoles @entity {
+  id: ID! # colonyAddress_domainId_userAddress
+  user: String! # userAddress
+  domain: Domain!
+  administration: Boolean!
+  # TODO: other roles
 }
 
 type Skill @entity {
