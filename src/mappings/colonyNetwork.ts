@@ -13,8 +13,9 @@ import {
   ReputationRootHashSet,
   UserLabelRegistered,
   ColonyLabelRegistered
-} from "../../generated/ColonyNetwork/IColonyNetwork"
-import { Colony, Domain, ColonyRoles } from "../../generated/schema"
+} from '../../generated/ColonyNetwork/IColonyNetwork'
+
+import { Colony, Domain, ColonyRoles, User } from '../../generated/schema'
 
 export function handleColonyNetworkInitialised(
   event: ColonyNetworkInitialised
@@ -44,10 +45,12 @@ export function handleColonyAdded(event: ColonyAdded): void {
   creatorRoles.user = from.toHex()
   creatorRoles.domain = `${colonyAddress.toHex()}_1`
   creatorRoles.administration = true
+  creatorRoles.save()
 
   const rootDomain = new Domain(`${colonyAddress.toHex()}_1`)
   rootDomain.index = 1
   rootDomain.roles = [creatorRoles.id]
+  rootDomain.save()
 
   const colony = new Colony(colonyAddress.toHex())
   colony.index = colonyId
@@ -72,14 +75,13 @@ export function handleReputationRootHashSet(
   event: ReputationRootHashSet
 ): void {}
 
-export function handleUserLabelRegistered(event: UserLabelRegistered): void {}
+export function handleUserLabelRegistered(event: UserLabelRegistered): void {
+  const { user: userAddress, label } = event.params
+  const user = User.load(userAddress.toHex()) || new User(userAddress.toHex())
+  user.ensName = label.toString() // TODO: this is hash currently
+  user.save()
+}
 
 export function handleColonyLabelRegistered(
   event: ColonyLabelRegistered
-): void {
-  const { colony: colonyAddress, label } = event.params
-  const colony = Colony.load(colonyAddress.toHex())
-  if (!colony) return
-  colony.ensName = label.toString() // This needs to be converted
-  colony.save()
-}
+): void {}

@@ -1,6 +1,12 @@
+type User @entity {
+  id: ID! # userAddress
+  ensName: String
+}
+
 type Colony @entity {
   id: ID! # Address
   ensName: String
+  orbitAddress: String
   index: Int
   token: String # Address
   domains: [Domain!]!
@@ -17,7 +23,7 @@ type Domain @entity {
 # Should not be in root query
 type ColonyRoles @entity {
   id: ID! # colonyAddress_domainId_userAddress
-  user: String! # userAddress
+  user: User!
   domain: Domain!
   administration: Boolean!
   # TODO: other roles
