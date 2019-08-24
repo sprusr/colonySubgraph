@@ -39,8 +39,6 @@ export function handleColonyVersionAdded(event: ColonyVersionAdded): void {}
 export function handleMetaColonyCreated(event: MetaColonyCreated): void {}
 
 export function handleColonyAdded(event: ColonyAdded): void {
-  ColonyTemplate.create(event.params.colonyAddress)
-
   let creatorRoles = new ColonyRoles(`${event.params.colonyAddress.toHex()}_1_${event.transaction.from.toHex()}`)
   creatorRoles.user = event.transaction.from.toHex()
   creatorRoles.domain = `${event.params.colonyAddress.toHex()}_1`
@@ -52,11 +50,13 @@ export function handleColonyAdded(event: ColonyAdded): void {
   rootDomain.roles = [creatorRoles.id]
   rootDomain.save()
 
-  let colony = Colony.load(event.params.colonyAddress.toHex())
+  let colony = new Colony(event.params.colonyAddress.toHex())
   colony.index = event.params.colonyId
   colony.token = event.params.token.toHex()
   colony.domains = [rootDomain.id]
   colony.save()
+
+  ColonyTemplate.create(event.params.colonyAddress)
 }
 
 export function handleSkillAdded(event: SkillAdded): void {}
