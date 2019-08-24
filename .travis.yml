@@ -5,4 +5,13 @@ cache:
   yarn: true
   directories:
     - node_modules
-
+stages:
+  - name: test
+  - name: deploy
+    if: branch = master
+jobs:
+  include:
+    - stage: test
+      script: yarn test
+    - stage: deploy
+      script: graph auth https://api.thegraph.com/deploy/ $THEGRAPH_TOKEN && yarn deploy
