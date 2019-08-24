@@ -8,7 +8,7 @@
     "create-local": "graph create --node http://localhost:8020/ JoinColony/colonyNetwork",
     "remove-local": "graph remove --node http://localhost:8020/ JoinColony/colonyNetwork",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 JoinColony/colonyNetwork",
-    "test": "echo Tests passed."
+    "test": "graph codegen && graph build"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.14.0",
