@@ -1,0 +1,87 @@
+specVersion: 0.0.1
+description: A subgraph for the colonyNetwork
+repository: https://github.com/sprusr/colonySubgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: ColonyNetwork
+    network: mainnet
+    source:
+      address: "0x5346D0f80e2816FaD329F2c140c870ffc3c3E2Ef"
+      abi: IColonyNetwork
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - Colony
+        - Skill
+        - User
+        # - ColonyNetworkInitialised
+        # - TokenLockingAddressSet
+        # - MiningCycleResolverSet
+        # - NetworkFeeInverseSet
+        # - ColonyVersionAdded
+        # - MetaColonyCreated
+        # - ColonyAdded
+        # - SkillAdded
+        # - AuctionCreated
+        # - ReputationMiningInitialised
+        # - ReputationMiningCycleComplete
+        # - ReputationRootHashSet
+        # - UserLabelRegistered
+        # - ColonyLabelRegistered
+      abis:
+        - name: IColonyNetwork
+          file: ./abis/IColonyNetwork.json
+      eventHandlers:
+        - event: ColonyNetworkInitialised(address)
+          handler: handleColonyNetworkInitialised
+        - event: TokenLockingAddressSet(address)
+          handler: handleTokenLockingAddressSet
+        - event: MiningCycleResolverSet(address)
+          handler: handleMiningCycleResolverSet
+        - event: NetworkFeeInverseSet(uint256)
+          handler: handleNetworkFeeInverseSet
+        - event: ColonyVersionAdded(uint256,address)
+          handler: handleColonyVersionAdded
+        - event: MetaColonyCreated(address,address,uint256)
+          handler: handleMetaColonyCreated
+        - event: ColonyAdded(indexed uint256,indexed address,address)
+          handler: handleColonyAdded
+        - event: SkillAdded(uint256,uint256)
+          handler: handleSkillAdded
+        - event: AuctionCreated(address,address,uint256)
+          handler: handleAuctionCreated
+        - event: ReputationMiningInitialised(address)
+          handler: handleReputationMiningInitialised
+        - event: ReputationMiningCycleComplete(bytes32,uint256)
+          handler: handleReputationMiningCycleComplete
+        - event: ReputationRootHashSet(bytes32,uint256,address[],uint256)
+          handler: handleReputationRootHashSet
+        - event: UserLabelRegistered(indexed address,bytes32)
+          handler: handleUserLabelRegistered
+        - event: ColonyLabelRegistered(indexed address,bytes32)
+          handler: handleColonyLabelRegistered
+      file: ./src/mappings/colonyNetwork.ts
+    templates:
+      - name: Colony
+        kind: ethereum/contract
+        network: mainnet
+        source:
+          abi: IColony
+        mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.1
+          language: wasm/assemblyscript
+          file: ./src/mappings/colony.ts
+          entities:
+            - Domain
+            - UserColonyRoles
+          abis:
+            - name: IColony
+              file: ./abis/IColony.json
+          eventHandlers:
+            - event: ColonyInitialised(address,address)
+              handler: handleColonyInitialised

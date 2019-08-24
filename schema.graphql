@@ -1,0 +1,29 @@
+type User @entity {
+  id: ID!
+  ensName: String
+}
+
+type Colony @entity {
+  id: ID!
+  domains: [Domain!]!
+}
+
+# Should not be in root query
+type UserColonyRoles @entity {
+  id: ID! # Don't want this
+  user: User!
+  administration: Boolean!
+  # TODO: other roles
+}
+
+# Should not be in root query
+type Domain @entity {
+  id: ID!
+  parent: Domain
+  roles: [UserColonyRoles!]!
+}
+
+type Skill @entity {
+  id: ID!
+  parent: Skill
+}
