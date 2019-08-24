@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, log } from '@graphprotocol/graph-ts'
 
 import {
   IColony,
@@ -41,11 +41,11 @@ export function handleColonyBootstrapped(event: ColonyBootstrapped): void {}
 export function handleColonyUpgraded(event: ColonyUpgraded): void {}
 
 export function handleColonyRoleSet(event: ColonyRoleSet): void {
-  let roles = ColonyRoles.load(`${event.address.toHex()}_${event.params.domainId.toString()}_${event.params.user.toHex()}`)
+  let roles = ColonyRoles.load(event.address.toHex() + '_' + event.params.domainId.toString() + '_' + event.params.user.toHex())
   if (!roles) {
-    roles = new ColonyRoles(`${event.address.toHex()}_${event.params.domainId.toString()}_${event.params.user.toHex()}`)
+    roles = new ColonyRoles(event.address.toHex() + '_' + event.params.domainId.toString() + '_' + event.params.user.toHex())
     roles.user = event.params.user.toHex()
-    roles.domain = `${event.address.toHex()}_${event.params.domainId.toString()}`
+    roles.domain = event.address.toHex() + '_' + event.params.domainId.toString()
   }
 
   switch (event.params.role) {
@@ -115,20 +115,21 @@ export function handlePayoutClaimed(event: PayoutClaimed): void {}
 export function handleTaskCanceled(event: TaskCanceled): void {}
 
 export function handleDomainAdded(event: DomainAdded): void {
-  let domain = new Domain(`${event.address.toHex()}_${event.params.domainId.toString()}`)
+  let domain = new Domain(event.address.toHex() + '_' + event.params.domainId.toString())
   domain.index = event.params.domainId
-  domain.parent = `${event.address.toHex()}_1`
+  domain.parent = event.address.toHex() + '_1'
   domain.save()
 }
 
 export function handleFundingPotAdded(event: FundingPotAdded): void {}
 
-export function handleRegisterColonyLabel(call: RegisterColonyLabelCall): void {
-  let colony = Colony.load(call.to.toHex())
+// TODO: reinstate this when it can handle upgradable contracts
+// export function handleRegisterColonyLabel(call: RegisterColonyLabelCall): void {
+//   let colony = Colony.load(call.to.toHex())
   
-  if (colony) {
-    colony.ensName = call.inputs.colonyName
-    colony.orbitAddress = call.inputs.orbitdb
-    colony.save()
-  }
-}
+//   if (colony) {
+//     colony.ensName = call.inputs.colonyName
+//     colony.orbitAddress = call.inputs.orbitdb
+//     colony.save()
+//   }
+// }

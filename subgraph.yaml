@@ -122,5 +122,6 @@ dataSources:
             - event: FundingPotAdded(uint256)
               handler: handleFundingPotAdded
           callHandlers:
-            - function: registerColonyLabel(string,string)
-              handler: handleRegisterColonyLabel
+            # TODO: reinstate this when it can handle upgradable contracts
+            # - function: registerColonyLabel(string,string)
+            #   handler: handleRegisterColonyLabel

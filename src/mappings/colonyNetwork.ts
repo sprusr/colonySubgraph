@@ -39,13 +39,13 @@ export function handleColonyVersionAdded(event: ColonyVersionAdded): void {}
 export function handleMetaColonyCreated(event: MetaColonyCreated): void {}
 
 export function handleColonyAdded(event: ColonyAdded): void {
-  let creatorRoles = new ColonyRoles(`${event.params.colonyAddress.toHex()}_1_${event.transaction.from.toHex()}`)
+  let creatorRoles = new ColonyRoles(event.params.colonyAddress.toHex() + '_1_' + event.transaction.from.toHex())
   creatorRoles.user = event.transaction.from.toHex()
-  creatorRoles.domain = `${event.params.colonyAddress.toHex()}_1`
+  creatorRoles.domain = event.params.colonyAddress.toHex() + '_1'
   creatorRoles.administration = true
   creatorRoles.save()
 
-  let rootDomain = new Domain(`${event.params.colonyAddress.toHex()}_1`)
+  let rootDomain = new Domain(event.params.colonyAddress.toHex() + '_1')
   rootDomain.index = new BigInt(1)
   rootDomain.roles = [creatorRoles.id]
   rootDomain.save()
@@ -76,8 +76,11 @@ export function handleReputationRootHashSet(
 ): void {}
 
 export function handleUserLabelRegistered(event: UserLabelRegistered): void {
-  let user = User.load(event.params.user.toHex()) || new User(event.params.user.toHex())
-  user.ensName = event.params.label.toString() // TODO: this is hash currently
+  let user = User.load(event.params.user.toHex())
+  if (!user) {
+    user = new User(event.params.user.toHex())
+  }
+  user.ensName = event.params.label.toHex() // TODO: this is hash currently
   user.save()
 }
 
